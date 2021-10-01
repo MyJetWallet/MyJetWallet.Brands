@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using MyNoSqlServer.Abstractions;
 
@@ -32,7 +33,14 @@ namespace MyJetWallet.Brands.NoSql
             return brand;
         }
 
-        public async Task SetDomainPoolToBrand(string brandId, IEnumerable<string> domainPool)
+        public async Task<List<IBrand>> GetAllAsync()
+        {
+            var data = await _writer.GetAsync();
+
+            return data.Cast<IBrand>().ToList();
+        }
+
+        public async Task SetDomainPoolToBrandAsync(string brandId, IEnumerable<string> domainPool)
         {
             var brand = await _writer.GetAsync(BrandNoSql.GeneratePartitionKey(),
                 BrandNoSql.GenerateRowKey(brandId));
@@ -47,7 +55,7 @@ namespace MyJetWallet.Brands.NoSql
             await _writer.InsertOrReplaceAsync(brand);
         }
 
-        public async Task RemoveBrand(string brandId)
+        public async Task RemoveBrandAsync(string brandId)
         {
             await _writer.DeleteAsync(BrandNoSql.GeneratePartitionKey(), BrandNoSql.GenerateRowKey(brandId));
         }
