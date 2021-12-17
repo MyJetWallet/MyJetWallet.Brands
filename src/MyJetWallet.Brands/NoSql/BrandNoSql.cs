@@ -13,10 +13,11 @@ namespace MyJetWallet.Brands.NoSql
         
         public string Id { get; set; }
         public List<string> DomainsPool { get; set; }
+        public string EmailSenderAddress { get; set; }
 
         IReadOnlyList<string> IBrand.DomainsPool => DomainsPool;
 
-        public static BrandNoSql Create(string brandId, IEnumerable<string> domainPool)
+        public static BrandNoSql Create(string brandId, IEnumerable<string> domainPool, string senderAddress)
         {
             if (string.IsNullOrWhiteSpace(brandId))
             {
@@ -28,7 +29,8 @@ namespace MyJetWallet.Brands.NoSql
                 PartitionKey = GeneratePartitionKey(),
                 RowKey = GenerateRowKey(brandId),
                 Id = brandId,
-                DomainsPool = domainPool?.ToList() ?? new List<string>()
+                DomainsPool = domainPool?.ToList() ?? new List<string>(),
+                EmailSenderAddress = senderAddress
             };
         }
     }

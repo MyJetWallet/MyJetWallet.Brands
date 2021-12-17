@@ -8,5 +8,7 @@ namespace MyJetWallet.Brands
         string Id { get; }
 
         public IReadOnlyList<string> DomainsPool { get; }
+        
+        public string EmailSenderAddress { get; }
     }
 }

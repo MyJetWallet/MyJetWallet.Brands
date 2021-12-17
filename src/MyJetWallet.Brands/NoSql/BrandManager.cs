@@ -16,7 +16,7 @@ namespace MyJetWallet.Brands.NoSql
             _writer = writer;
         }
         
-        public async Task<IBrand> AddBrandAsync(string brandId, IEnumerable<string> domains)
+        public async Task<IBrand> AddBrandAsync(string brandId, IEnumerable<string> domains, string senderAddress)
         {
             var brand = await _writer.GetAsync(BrandNoSql.GeneratePartitionKey(),
                 BrandNoSql.GenerateRowKey(brandId));
@@ -26,7 +26,7 @@ namespace MyJetWallet.Brands.NoSql
                 throw new ArgumentException("Brand already exist", nameof(brand));
             }
             
-            brand = BrandNoSql.Create(brandId, domains);
+            brand = BrandNoSql.Create(brandId, domains, senderAddress);
 
             await _writer.InsertAsync(brand);
 
@@ -51,6 +51,21 @@ namespace MyJetWallet.Brands.NoSql
             }
 
             brand.DomainsPool = domainPool.ToList();
+
+            await _writer.InsertOrReplaceAsync(brand);
+        }
+        
+        public async Task SetSenderAddressToBrandAsync(string brandId, string senderAddress)
+        {
+            var brand = await _writer.GetAsync(BrandNoSql.GeneratePartitionKey(),
+                BrandNoSql.GenerateRowKey(brandId));
+
+            if (brand == null)
+            {
+                throw new ArgumentException("Brand does not exist", nameof(brand));
+            }
+
+            brand.EmailSenderAddress = senderAddress;
 
             await _writer.InsertOrReplaceAsync(brand);
         }
