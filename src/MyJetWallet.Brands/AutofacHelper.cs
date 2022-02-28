@@ -19,7 +19,7 @@ namespace MyJetWallet.Brands
         }
         
         public static ContainerBuilder RegisterBrandReader(this ContainerBuilder builder,
-            MyNoSqlTcpClient client)
+            IMyNoSqlSubscriber client)
         {
             builder.RegisterMyNoSqlReader<BrandNoSql>(client, BrandNoSql.TableName);
             builder.RegisterType<BrandReader>().As<IBrandReader>().AutoActivate().SingleInstance();
